@@ -16,3 +16,4 @@ packages/
 OALLexer.tokens
 .factorypath
 .vscode
+*.class

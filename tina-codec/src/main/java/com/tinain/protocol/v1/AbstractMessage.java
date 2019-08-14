@@ -45,6 +45,6 @@ public abstract class AbstractMessage implements Message {
 
     @Getter
     @Setter
-    private int csc;
+    private int crc;
 
 }

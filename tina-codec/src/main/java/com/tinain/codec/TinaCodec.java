@@ -11,24 +11,26 @@ import java.util.List;
 /**
  * @author Alan Lau
  */
-public class TinaCodec extends ByteToMessageCodec<TinaMessage> {
+public class TinaCodec extends ByteToMessageCodec<Message> {
 
     private TinaMessage message;
 
     private Serializer serializer;
 
 
-    @Override protected void encode(ChannelHandlerContext ctx, TinaMessage msg, ByteBuf out) throws Exception {
+    @Override protected void encode(ChannelHandlerContext ctx, Message msg, ByteBuf out) throws Exception {
         if (msg == null) {
             return;
         }
 
-        out.writeInt(msg.getMajor());
-        out.writeShort(msg.getVersion());
-        out.writeByte(msg.getType());
-        out.writeShort(msg.getLength());
-        out.writeBytes(serializer.serializer(msg.getObject()));
-        out.writeInt(msg.getCsc());
+        TinaMessage tinaMessage = (TinaMessage)msg;
+
+        out.writeInt(tinaMessage.getMajor());
+        out.writeShort(tinaMessage.getVersion());
+        out.writeByte(tinaMessage.getType());
+        out.writeShort(tinaMessage.getLength());
+        out.writeBytes(serializer.serializer(tinaMessage.getObject()));
+        out.writeInt(tinaMessage.getCrc());
     }
 
     @Override protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
@@ -61,11 +63,11 @@ public class TinaCodec extends ByteToMessageCodec<TinaMessage> {
             message.setObject(serializer.deserializer(in.readBytes(message.getLength()).array()));
         }
 
-        if (in.readableBytes() > 4 && message.getCsc() == 0) {
-            message.setCsc(in.readInt());
+        if (in.readableBytes() > 4 && message.getCrc() == 0) {
+            message.setCrc(in.readInt());
         }
 
-        if (message.getCsc() != 0) {
+        if (message.getCrc() != 0) {
             out.add(message);
             message = null;
         }

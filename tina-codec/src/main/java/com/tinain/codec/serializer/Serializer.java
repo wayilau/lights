@@ -1,7 +1,5 @@
 package com.tinain.codec.serializer;
 
-import com.tinain.protocol.v1.Message;
-
 /**
  * @author Alan Lau
  */

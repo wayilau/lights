@@ -1,4 +1,4 @@
-package com.tinain.codec.serializer;
+package com.tinain.serializer;
 
 import lombok.Getter;
 

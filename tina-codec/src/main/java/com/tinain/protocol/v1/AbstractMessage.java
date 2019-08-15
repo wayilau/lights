@@ -37,10 +37,6 @@ public abstract class AbstractMessage implements Message {
 
     @Getter
     @Setter
-    private short length;
-
-    @Getter
-    @Setter
     private Object object;
 
     @Getter

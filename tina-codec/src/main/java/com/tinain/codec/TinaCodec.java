@@ -1,6 +1,8 @@
 package com.tinain.codec;
 
-import com.tinain.codec.serializer.Serializer;
+import com.tinain.serializer.Serializer;
+import com.tinain.serializer.SerializerFactory;
+import com.tinain.serializer.SerializerType;
 import com.tinain.protocol.v1.Message;
 import com.tinain.protocol.v1.TinaMessage;
 import io.netty.buffer.ByteBuf;
@@ -28,8 +30,13 @@ public class TinaCodec extends ByteToMessageCodec<Message> {
         out.writeInt(tinaMessage.getMajor());
         out.writeShort(tinaMessage.getVersion());
         out.writeByte(tinaMessage.getType());
-        out.writeShort(tinaMessage.getLength());
-        out.writeBytes(serializer.serializer(tinaMessage.getObject()));
+        if (serializer == null) {
+            serializer = SerializerFactory.newIntance().getSerializer(SerializerType.KRYO);
+        }
+        byte[] bytes = serializer.serializer(tinaMessage.getObject());
+        int length = bytes.length;
+        out.writeInt(length);
+        out.writeBytes(bytes);
         out.writeInt(tinaMessage.getCrc());
     }
 
@@ -55,12 +62,8 @@ public class TinaCodec extends ByteToMessageCodec<Message> {
             message.setType(in.readByte());
         }
 
-        if (in.readableBytes() > 2 && message.getLength() == 0) {
-            message.setLength(in.readShort());
-        }
-
-        if (in.readableBytes() > message.getLength() && message.getObject() == null) {
-            message.setObject(serializer.deserializer(in.readBytes(message.getLength()).array()));
+        if (in.readableBytes() > 4 && message.getObject() == null) {
+            message.setObject(serializer.deserializer(in.readBytes(in.readInt()).array(), Object.class));
         }
 
         if (in.readableBytes() > 4 && message.getCrc() == 0) {

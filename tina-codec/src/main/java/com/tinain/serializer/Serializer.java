@@ -1,21 +1,21 @@
-package com.tinain.codec.serializer;
+package com.tinain.serializer;
 
 /**
  * @author Alan Lau
  */
-public interface Serializer {
+public interface Serializer<T> {
 
     /**
      * serializer object to byte.
      * @param message
      * @return
      */
-    byte [] serializer(Object message);
+    byte [] serializer(T message);
 
     /**
      * deserializer byte to object
      * @param bytes
      * @return
      */
-    Object deserializer(byte[] bytes);
+    T deserializer(byte[] bytes, Class<T> clazz);
 }

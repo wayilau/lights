@@ -1,4 +1,4 @@
-package com.tinain.codec.exception;
+package com.tinain.codec;
 
 /**
  * @author Alan Lau

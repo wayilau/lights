@@ -1,4 +1,4 @@
-package com.tinain.codec;
+package com.tinain.protocol.v1;
 
 import lombok.Getter;
 import lombok.Setter;

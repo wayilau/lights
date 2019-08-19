@@ -3,6 +3,8 @@ package com.tinain.serializer;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.tinain.protocol.v1.Entity;
+import com.tinain.protocol.v1.TinaMessage;
 
 /**
  * support kryo serializer
@@ -16,7 +18,14 @@ public class KryoSerializer<Message> extends AbstractSerializer<Message> {
 
     private Input input = new Input(1024);
 
-    @Override public byte[] serializer(Message message) {
+    public KryoSerializer() {
+        kryo.register(TinaMessage.class);
+        kryo.register(Entity.class);
+    }
+
+    @Override
+
+    public byte[] serializer(Message message) {
         kryo.writeObject(output, message);
         return output.getBuffer();
     }

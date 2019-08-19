@@ -1,5 +1,6 @@
 package com.tinain;
 
+import com.tinain.codec.AbstractCodec;
 import com.tinain.codec.TinaCodec;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -15,6 +16,11 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
  */
 public class Server {
 
+    /**
+     * unique for server starting debug.
+     */
+    private LogID logId;
+
     public static void main(String[] args) throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -26,7 +32,8 @@ public class Server {
             b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).childHandler(new ChannelInitializer<SocketChannel>() {
 
                 @Override protected void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline().addLast(new TinaCodec());
+                    ch.pipeline().addLast(new AbstractCodec.InternalCodec());
+                    ch.pipeline().addLast(new ServerHandler());
                 }
             }).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
 

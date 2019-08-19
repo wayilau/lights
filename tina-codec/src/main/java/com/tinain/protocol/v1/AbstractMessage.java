@@ -25,11 +25,11 @@ public abstract class AbstractMessage implements Message {
 
     @Getter
     @Setter
-    private int major = 0XAEFF;
+    private int major;
 
     @Getter
     @Setter
-    private int version = 1;
+    private int version;
 
     @Getter
     @Setter

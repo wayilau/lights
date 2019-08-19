@@ -13,67 +13,15 @@ import java.util.List;
 /**
  * @author Alan Lau
  */
-public class TinaCodec extends ByteToMessageCodec<Message> {
+public class TinaCodec extends AbstractCodec {
 
-    private TinaMessage message;
-
-    private Serializer serializer;
-
-
-    @Override protected void encode(ChannelHandlerContext ctx, Message msg, ByteBuf out) throws Exception {
-        if (msg == null) {
-            return;
-        }
-
-        TinaMessage tinaMessage = (TinaMessage)msg;
-
-        out.writeInt(tinaMessage.getMajor());
-        out.writeShort(tinaMessage.getVersion());
-        out.writeByte(tinaMessage.getType());
-        if (serializer == null) {
-            serializer = SerializerFactory.newIntance().getSerializer(SerializerType.KRYO);
-        }
-        byte[] bytes = serializer.serializer(tinaMessage.getObject());
-        int length = bytes.length;
-        out.writeInt(length);
-        out.writeBytes(bytes);
-        out.writeInt(tinaMessage.getCrc());
+    @Override public byte[] encode(Object o) {
+        return new byte[0];
     }
 
-    @Override protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-
-        if (message == null) {
-            message = new TinaMessage();
-        }
-
-        if (!in.isReadable()) {
-            return;
-        }
-
-        if (in.readableBytes() > 4 && message.getMajor() == 0) {
-            message.setMajor(in.readInt());
-        }
-
-        if (in.readableBytes() > 2 && message.getVersion() == 0) {
-            message.setVersion(in.readShort());
-        }
-
-        if (in.readableBytes() > 1 && message.getType() == 0) {
-            message.setType(in.readByte());
-        }
-
-        if (in.readableBytes() > 4 && message.getObject() == null) {
-            message.setObject(serializer.deserializer(in.readBytes(in.readInt()).array(), Object.class));
-        }
-
-        if (in.readableBytes() > 4 && message.getCrc() == 0) {
-            message.setCrc(in.readInt());
-        }
-
-        if (message.getCrc() != 0) {
-            out.add(message);
-            message = null;
-        }
-
+    @Override public Object decode(byte[] bytes, Class clazz) {
+        return null;
     }
+
+
 }

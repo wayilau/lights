@@ -27,7 +27,7 @@ public class TestTinaCodec {
         b.option(ChannelOption.SO_KEEPALIVE, true);
         b.handler(new ChannelInitializer<SocketChannel>() {
             @Override protected void initChannel(SocketChannel ch) throws Exception {
-                ch.pipeline().addLast(new TinaCodec());
+                ch.pipeline().addLast(new AbstractCodec.InternalCodec());
                 ch.pipeline().addLast(new LogicHandler());
             }
         });

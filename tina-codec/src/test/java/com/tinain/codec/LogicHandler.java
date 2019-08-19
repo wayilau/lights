@@ -1,5 +1,6 @@
 package com.tinain.codec;
 
+import com.tinain.protocol.v1.Entity;
 import com.tinain.protocol.v1.TinaMessage;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -17,6 +18,6 @@ public class LogicHandler extends ChannelInboundHandlerAdapter {
         e.setId("aaa");
         e.setName("test");
         message.setObject(e);
-        ctx.channel().write(message);
+        ctx.channel().writeAndFlush(message);
     }
 }
